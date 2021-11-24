@@ -7,22 +7,34 @@ namespace Chess.Managers
 
     using Structs;
     using Pieces;
+    using Enums;
 
     public class GameManager : MonoBehaviour
     {
         // Resources to Load
         private const string BOARD_MATERIALS_PATH = "Materials/Board/Normal";
         private const string PIECES_MOVEMENT_MATERIAL_PATH = "Materials/Board/Movement";
-        private const string PLAYER_PIECES_PREFABS_PATH = "Prefabs/Pieces";
+        private const string PIECES_PREFABS_PATH = "Prefabs/Pieces/";
 
         private Material[] _NormalNodeMaterials;
         private Material _MovementNodeMaterial;
 
-        private GameObject[] _PiecesToInstantiate;
+        //TODO: Use this to Instantiate the pieces and use indexes to check color
+        private EPiece[,] _BoardPieces = new EPiece[8, 8]
+        {
+            {EPiece.Rook, EPiece.Knight, EPiece.Bishop, EPiece.King, EPiece.Queen, EPiece.Bishop, EPiece.Knight, EPiece.Rook},
+            {EPiece.Pawn, EPiece.Pawn, EPiece.Pawn, EPiece.Pawn, EPiece.Pawn, EPiece.Pawn, EPiece.Pawn, EPiece.Pawn},
+            {EPiece.Empty, EPiece.Empty, EPiece.Empty, EPiece.Empty, EPiece.Empty, EPiece.Empty, EPiece.Empty, EPiece.Empty},
+            {EPiece.Empty, EPiece.Empty, EPiece.Empty, EPiece.Empty, EPiece.Empty, EPiece.Empty, EPiece.Empty, EPiece.Empty},
+            {EPiece.Empty, EPiece.Empty, EPiece.Empty, EPiece.Empty, EPiece.Empty, EPiece.Empty, EPiece.Empty, EPiece.Empty},
+            {EPiece.Empty, EPiece.Empty, EPiece.Empty, EPiece.Empty, EPiece.Empty, EPiece.Empty, EPiece.Empty, EPiece.Empty},
+            {EPiece.Pawn, EPiece.Pawn, EPiece.Pawn, EPiece.Pawn, EPiece.Pawn, EPiece.Pawn, EPiece.Pawn, EPiece.Pawn},
+            {EPiece.Rook, EPiece.Knight, EPiece.Bishop, EPiece.Queen, EPiece.King, EPiece.Bishop, EPiece.Knight, EPiece.Rook}
+        };
 
         private GridNode[,] _Grid = new GridNode[8, 8];
 
-        private Piece[] _Pieces = new Piece[16];
+        private Piece[] _Pieces = new Piece[32];
 
         private bool _MouseHovering = false;
 
@@ -41,6 +53,14 @@ namespace Chess.Managers
             SetupGrid();
         }
 
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.A))
+            {
+                _Grid[0, 0].Test();
+                Debug.Log("Confirmacao: " + _Grid[0, 0]._IsOccupied);
+            }
+        }
         //Setup Methods
 
         private void SetupGrid()
@@ -51,7 +71,10 @@ namespace Chess.Managers
             GameObject quad;
             char boardLetter;
 
-            for(int x = 0; x < _Grid.GetLength(0); x++)
+            GameObject instantiatedPiece;
+            Piece piece;
+
+            for (int x = 0; x < _Grid.GetLength(0); x++)
             {
                 boardLetter = (char)(65 + x);
 
@@ -69,6 +92,12 @@ namespace Chess.Managers
 
                     //y < 2 || y > _Grid.GetLength(0) - 2 are the rows occupied by the white and black pieces respectfully
                     _Grid[x, y] = new GridNode(quad.transform, _NormalNodeMaterials[(x + y) % 2], y < 2 || y > _Grid.GetLength(0) - 2);
+
+                    if (y > 2 && y < _Grid.GetLength(0) - 2)
+                        continue;
+
+                    //instantiatedPiece = Instantiate(Resources.Load<GameObject>(PIECES_PREFABS_PATH + (x < 2 ? EPieceColor.White.ToString() : EPieceColor.Black.ToString()) + " " +_BoardPieces[x, y].ToString()));
+                    //_Pieces[]
                 }
             }
         }
@@ -77,7 +106,7 @@ namespace Chess.Managers
         // Behaviour Methods
 
         // Board Node selection
-        private void FixedUpdate()
+        /*private void FixedUpdate()
         {
             if (!_MouseHovering)
                 return;
@@ -101,11 +130,11 @@ namespace Chess.Managers
         private void OnMouseExit()
         {
             _MouseHovering = false;
-        }
+        }*/
 
         // Grid Coloring Methods
 
-        public void ColorNodes (int gridX, int gridY)
+        public void ColorNodes(int gridX, int gridY)
         {
             //TODO: Create PieceBehaviour struct(?) that contains the movement type for each piece
         }

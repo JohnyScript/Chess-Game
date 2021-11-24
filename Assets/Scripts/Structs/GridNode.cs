@@ -10,13 +10,14 @@
 
         private Material _NormalMaterial;
 
-        private bool _IsOccupied;
+        public bool _IsOccupied;
 
         public GridNode(Transform nodeObject, Material normalMaterial, bool isOccupied)
         {
             _NodeObject = nodeObject;
             _NormalMaterial = normalMaterial;
-            _IsOccupied = isOccupied;
+            _IsOccupied = true;
+            Debug.Log("init: " + _IsOccupied);
 
             ChangeNodeMaterial(_NormalMaterial);
         }
@@ -29,6 +30,14 @@
         public void ChangeNodeMaterial(Material materialToUse)
         {
             _NodeObject.GetComponent<MeshRenderer>().material = materialToUse;
+        }
+
+        public void Test()
+        {
+
+            _IsOccupied = false;
+            Debug.Log("material: " + _NodeObject.name);
+            Debug.Log("ocupado? " + _IsOccupied);
         }
 
         /// <summary>Checks or Sets the node's occupied state;</summary>
