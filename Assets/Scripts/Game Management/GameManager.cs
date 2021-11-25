@@ -94,7 +94,7 @@ namespace Chess.Managers
 
                     instantiatedPiece = Instantiate(Resources.Load<GameObject>(PIECES_PREFABS_PATH + _BoardPieces[x, y].ToString()));
                     piece = instantiatedPiece.AddComponent<Piece>();
-                    piece.Init(pieceColor, new Vector3(y, 0, x), x > 2 ? 180 : 0);
+                    piece.Init(pieceColor, new Vector3(y, .1f , x), x > 2 ? 180 : 0);
                     piece.transform.SetParent(pieceColor == EPieceColor.White ? whites.transform : blacks.transform);
 
                     _GameBoard[x, y] = new BoardNode(piece, gridNode);
