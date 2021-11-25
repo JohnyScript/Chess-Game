@@ -5,7 +5,7 @@ namespace Chess.Managers
     using System.Collections.Generic;
     using UnityEngine;
 
-    using Structs;
+    using Grid;
     using Pieces;
     using Enums;
 
@@ -19,7 +19,6 @@ namespace Chess.Managers
         private Material[] _NormalNodeMaterials;
         private Material _MovementNodeMaterial;
 
-        //TODO: Use this to Instantiate the pieces and use indexes to check color
         private EPiece[,] _BoardPieces = new EPiece[8, 8]
         {
             {EPiece.Rook, EPiece.Knight, EPiece.Bishop, EPiece.King, EPiece.Queen, EPiece.Bishop, EPiece.Knight, EPiece.Rook},
@@ -32,8 +31,8 @@ namespace Chess.Managers
             {EPiece.Rook, EPiece.Knight, EPiece.Bishop, EPiece.Queen, EPiece.King, EPiece.Bishop, EPiece.Knight, EPiece.Rook}
         };
 
+        //TODO: replace these with bid array containing class with GridNode and Piece
         private GridNode[,] _Grid = new GridNode[8, 8];
-
         private Piece[] _Pieces = new Piece[32];
 
         private bool _MouseHovering = false;
@@ -53,14 +52,6 @@ namespace Chess.Managers
             SetupGrid();
         }
 
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.A))
-            {
-                _Grid[0, 0].Test();
-                Debug.Log("Confirmacao: " + _Grid[0, 0]._IsOccupied);
-            }
-        }
         //Setup Methods
 
         private void SetupGrid()
@@ -93,44 +84,15 @@ namespace Chess.Managers
                     //y < 2 || y > _Grid.GetLength(0) - 2 are the rows occupied by the white and black pieces respectfully
                     _Grid[x, y] = new GridNode(quad.transform, _NormalNodeMaterials[(x + y) % 2], y < 2 || y > _Grid.GetLength(0) - 2);
 
-                    if (y > 2 && y < _Grid.GetLength(0) - 2)
+                    if (_BoardPieces[x, y] == EPiece.Empty)
                         continue;
 
-                    //instantiatedPiece = Instantiate(Resources.Load<GameObject>(PIECES_PREFABS_PATH + (x < 2 ? EPieceColor.White.ToString() : EPieceColor.Black.ToString()) + " " +_BoardPieces[x, y].ToString()));
-                    //_Pieces[]
+                    instantiatedPiece = Instantiate(Resources.Load<GameObject>(PIECES_PREFABS_PATH + _BoardPieces[x, y].ToString()));
+                    //_Pieces[] (x < 2 ? EPieceColor.White.ToString() : EPieceColor.Black.ToString())
                 }
             }
         }
 
-
-        // Behaviour Methods
-
-        // Board Node selection
-        /*private void FixedUpdate()
-        {
-            if (!_MouseHovering)
-                return;
-
-            _BoardRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-            Debug.Log("Raycasting");
-            if (Physics.Raycast(_BoardRay, out _RaycastHit, Mathf.Infinity))
-            {
-                Debug.Log("hit");
-                Debug.Log(_RaycastHit.collider.gameObject.name);
-            }
-        }
-
-        private void OnMouseEnter()
-        {
-            Debug.Log("IsHovering");
-            _MouseHovering = true;
-        }
-
-        private void OnMouseExit()
-        {
-            _MouseHovering = false;
-        }*/
 
         // Grid Coloring Methods
 

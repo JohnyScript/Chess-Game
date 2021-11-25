@@ -1,10 +1,9 @@
-﻿namespace Chess.Structs
+﻿namespace Chess.Grid
 {
-    using System;
     using UnityEngine;
 
     /// <summary>Represents a square on the chess board </summary>
-    public struct GridNode
+    public class GridNode
     {
         private Transform _NodeObject;
 
@@ -16,8 +15,7 @@
         {
             _NodeObject = nodeObject;
             _NormalMaterial = normalMaterial;
-            _IsOccupied = true;
-            Debug.Log("init: " + _IsOccupied);
+            _IsOccupied = isOccupied;
 
             ChangeNodeMaterial(_NormalMaterial);
         }
@@ -30,14 +28,6 @@
         public void ChangeNodeMaterial(Material materialToUse)
         {
             _NodeObject.GetComponent<MeshRenderer>().material = materialToUse;
-        }
-
-        public void Test()
-        {
-
-            _IsOccupied = false;
-            Debug.Log("material: " + _NodeObject.name);
-            Debug.Log("ocupado? " + _IsOccupied);
         }
 
         /// <summary>Checks or Sets the node's occupied state;</summary>
