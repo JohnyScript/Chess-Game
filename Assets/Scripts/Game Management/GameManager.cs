@@ -32,22 +32,12 @@ namespace Chess.Managers
         };
 
         //TODO: replace these with bid array containing class with GridNode and Piece
-        private GridNode[,] _Grid = new GridNode[8, 8];
-        private Piece[] _Pieces = new Piece[32];
-
-        private bool _MouseHovering = false;
-
-        private Ray _BoardRay;
-        private RaycastHit _RaycastHit;
-
-        private LayerMask mask;
+        private BoardNode[,] _GameBoard = new BoardNode[8, 8];
 
         private void Start()
         {
             _NormalNodeMaterials = Resources.LoadAll<Material>(BOARD_MATERIALS_PATH);
             _MovementNodeMaterial = Resources.LoadAll<Material>(PIECES_MOVEMENT_MATERIAL_PATH)[0];
-
-            mask = ~LayerMask.GetMask("Board");
 
             SetupGrid();
         }
@@ -56,24 +46,36 @@ namespace Chess.Managers
 
         private void SetupGrid()
         {
-            GameObject gridObject = new GameObject("Grid");
-            gridObject.transform.SetParent(transform);
+            GameObject boardObject = new GameObject("Board");
+            boardObject.transform.SetParent(transform);
+
+            GameObject pieceContainer = new GameObject("Piece Container");
+            pieceContainer.transform.SetParent(transform);
+            GameObject whites = new GameObject("Whites");
+            GameObject blacks = new GameObject("Blacks");
+
+            whites.transform.SetParent(pieceContainer.transform);
+            blacks.transform.SetParent(pieceContainer.transform);
+
+            GridNode gridNode;
 
             GameObject quad;
             char boardLetter;
 
             GameObject instantiatedPiece;
             Piece piece;
+            EPieceColor pieceColor;
 
-            for (int x = 0; x < _Grid.GetLength(0); x++)
+            for (int x = 0; x < _GameBoard.GetLength(0); x++)
             {
                 boardLetter = (char)(65 + x);
 
                 GameObject rowObject = new GameObject($"{boardLetter}");
-                rowObject.transform.SetParent(gridObject.transform);
+                rowObject.transform.SetParent(boardObject.transform);
 
-                for (int y = 0; y < _Grid.GetLength(1); y++)
+                for (int y = 0; y < _GameBoard.GetLength(1); y++)
                 {
+                    // Board Generation
                     quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
                     quad.transform.rotation = Quaternion.Euler(90, 0, 0);
                     quad.transform.position = new Vector3(y, 0, x);
@@ -82,23 +84,22 @@ namespace Chess.Managers
                     quad.layer = LayerMask.NameToLayer("Board");
 
                     //y < 2 || y > _Grid.GetLength(0) - 2 are the rows occupied by the white and black pieces respectfully
-                    _Grid[x, y] = new GridNode(quad.transform, _NormalNodeMaterials[(x + y) % 2], y < 2 || y > _Grid.GetLength(0) - 2);
-
+                    gridNode = new GridNode(quad.transform, _NormalNodeMaterials[(x + y) % 2], y < 2 || y > _GameBoard.GetLength(0) - 2);
+                    
+                    // Piece Generation
                     if (_BoardPieces[x, y] == EPiece.Empty)
                         continue;
 
+                    pieceColor = x < 2 ? EPieceColor.White : EPieceColor.Black;
+
                     instantiatedPiece = Instantiate(Resources.Load<GameObject>(PIECES_PREFABS_PATH + _BoardPieces[x, y].ToString()));
-                    //_Pieces[] (x < 2 ? EPieceColor.White.ToString() : EPieceColor.Black.ToString())
+                    piece = instantiatedPiece.AddComponent<Piece>();
+                    piece.Init(pieceColor, new Vector3(y, 0, x), x > 2 ? 180 : 0);
+                    piece.transform.SetParent(pieceColor == EPieceColor.White ? whites.transform : blacks.transform);
+
+                    _GameBoard[x, y] = new BoardNode(piece, gridNode);
                 }
             }
-        }
-
-
-        // Grid Coloring Methods
-
-        public void ColorNodes(int gridX, int gridY)
-        {
-            //TODO: Create PieceBehaviour struct(?) that contains the movement type for each piece
         }
     }
 }

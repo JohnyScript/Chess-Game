@@ -7,9 +7,11 @@
     {
         private Transform _NodeObject;
 
+        private MeshRenderer _MeshRenderer;
+
         private Material _NormalMaterial;
 
-        public bool _IsOccupied;
+        private bool _IsOccupied;
 
         public GridNode(Transform nodeObject, Material normalMaterial, bool isOccupied)
         {
@@ -17,17 +19,19 @@
             _NormalMaterial = normalMaterial;
             _IsOccupied = isOccupied;
 
+            _MeshRenderer = _NodeObject.GetComponent<MeshRenderer>();
+
             ChangeNodeMaterial(_NormalMaterial);
         }
 
         public void ChangeNodeMaterial()
         {
-            _NodeObject.GetComponent<MeshRenderer>().material = _NormalMaterial;
+            _MeshRenderer.material = _NormalMaterial;
         }
 
         public void ChangeNodeMaterial(Material materialToUse)
         {
-            _NodeObject.GetComponent<MeshRenderer>().material = materialToUse;
+            _MeshRenderer.material = materialToUse;
         }
 
         /// <summary>Checks or Sets the node's occupied state;</summary>
