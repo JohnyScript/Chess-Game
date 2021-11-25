@@ -3,23 +3,20 @@
     using UnityEngine;
 
     /// <summary>Represents a square on the chess board </summary>
-    public class GridNode
+    public class GridNode : MonoBehaviour
     {
-        private Transform _NodeObject;
-
         private MeshRenderer _MeshRenderer;
 
         private Material _NormalMaterial;
 
         private bool _IsOccupied;
 
-        public GridNode(Transform nodeObject, Material normalMaterial, bool isOccupied)
+        public void Init(Material normalMaterial, bool isOccupied)
         {
-            _NodeObject = nodeObject;
             _NormalMaterial = normalMaterial;
             _IsOccupied = isOccupied;
 
-            _MeshRenderer = _NodeObject.GetComponent<MeshRenderer>();
+            _MeshRenderer = gameObject.GetComponent<MeshRenderer>();
 
             ChangeNodeMaterial(_NormalMaterial);
         }

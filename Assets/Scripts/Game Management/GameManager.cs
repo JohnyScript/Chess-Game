@@ -83,9 +83,10 @@ namespace Chess.Managers
                     quad.transform.SetParent(rowObject.transform);
                     quad.layer = LayerMask.NameToLayer("Board");
 
+                    gridNode = quad.AddComponent<GridNode>();
                     //y < 2 || y > _Grid.GetLength(0) - 2 are the rows occupied by the white and black pieces respectfully
-                    gridNode = new GridNode(quad.transform, _NormalNodeMaterials[(x + y) % 2], y < 2 || y > _GameBoard.GetLength(0) - 2);
-                    
+                    gridNode.Init(_NormalNodeMaterials[(x + y) % 2], y < 2 || y > _GameBoard.GetLength(0) - 2);
+
                     // Piece Generation
                     if (_BoardPieces[x, y] == EPiece.Empty)
                         continue;
