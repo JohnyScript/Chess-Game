@@ -5,4 +5,15 @@ public class CameraMovement : MonoBehaviour
 {
     //TODO: Implment Camera movement code
     //Have an event that when triggered rotates camera to the correct position
+    private Quaternion _StartingRotation;
+
+    private Quaternion _TargetRotation;
+
+    private void RotateCamera()
+    {
+        while (transform.rotation != _TargetRotation)
+        {
+
+        }
+    }
 }

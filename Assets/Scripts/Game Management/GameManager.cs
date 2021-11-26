@@ -17,7 +17,7 @@ namespace Chess.Managers
         private const string PIECES_PREFABS_PATH = "Prefabs/Pieces/";
 
         private Material[] _NormalNodeMaterials;
-        private Material _MovementNodeMaterial;
+        private Material _NodeHighlightMaterial;
 
         private EPiece[,] _BoardPieces = new EPiece[8, 8]
         {
@@ -31,18 +31,28 @@ namespace Chess.Managers
             {EPiece.Rook, EPiece.Knight, EPiece.Bishop, EPiece.Queen, EPiece.King, EPiece.Bishop, EPiece.Knight, EPiece.Rook}
         };
 
-        //TODO: replace these with bid array containing class with GridNode and Piece
         private BoardNode[,] _GameBoard = new BoardNode[8, 8];
+
+        // Properties
+
+        public static ETurn CurrentTurn = ETurn.White;
+
+        public static int TurnsElapsed;
 
         private void Start()
         {
             _NormalNodeMaterials = Resources.LoadAll<Material>(BOARD_MATERIALS_PATH);
-            _MovementNodeMaterial = Resources.LoadAll<Material>(PIECES_MOVEMENT_MATERIAL_PATH)[0];
+            _NodeHighlightMaterial = Resources.LoadAll<Material>(PIECES_MOVEMENT_MATERIAL_PATH)[0];
 
             SetupGrid();
         }
 
-        //Setup Methods
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.A))
+                GameManager.ChangeTurn();
+        }
 
         private void SetupGrid()
         {
@@ -95,12 +105,23 @@ namespace Chess.Managers
 
                     instantiatedPiece = Instantiate(Resources.Load<GameObject>(PIECES_PREFABS_PATH + _BoardPieces[x, y].ToString()));
                     piece = instantiatedPiece.AddComponent<Piece>();
-                    piece.Init(pieceColor, new Vector3(y, .1f , x), x > 2 ? 180 : 0);
+                    piece.Init(pieceColor, new Vector3(y, .1f , x), x > 2 ? 180 : 0, CheckIfPlayerTurn);
                     piece.transform.SetParent(pieceColor == EPieceColor.White ? whites.transform : blacks.transform);
 
                     _GameBoard[x, y] = new BoardNode(piece, gridNode);
                 }
             }
+        }
+
+        public bool CheckIfPlayerTurn(EPieceColor pieceColor)
+        {
+            return CurrentTurn.ToString().Equals(pieceColor.ToString());
+        }
+
+        public static void ChangeTurn()
+        {
+            TurnsElapsed++;
+            CurrentTurn = (ETurn)(TurnsElapsed % 2);
         }
     }
 }

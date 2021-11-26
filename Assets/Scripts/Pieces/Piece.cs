@@ -4,27 +4,36 @@
 
     using UnityEngine;
 
+    using Managers;
     using Enums;
 
     [RequireComponent(typeof(Rigidbody))]
     public class Piece : MonoBehaviour
     {
+        // Delegates
+        public delegate bool TurnCheck(EPieceColor pieceColor);
+
+        // Constants
         private const string PIECE_MATERIALS_PATH = "Materials/Pieces/";
 
         [HideInInspector]
-        public EPieceColor _PieceColor { get; private set; }
+        public EPieceColor PieceColor { get; private set; }
 
         private MeshRenderer _MeshRenderer;
 
         private Material _NormalMaterial;
         private Material _HighlightedMaterial;
 
-        public void Init(EPieceColor pieceColor, Vector3 startingPosition, int startingRotation)
+        private event TurnCheck OnTurnCheck;
+
+        public void Init(EPieceColor pieceColor, Vector3 startingPosition, int startingRotation, TurnCheck turnCheck)
         {
-            _PieceColor = pieceColor;
+            PieceColor = pieceColor;
 
             transform.position = startingPosition;
             transform.rotation = Quaternion.Euler(0, startingRotation, 0);
+
+            OnTurnCheck = turnCheck;
 
             _MeshRenderer = GetComponent<MeshRenderer>();
 
@@ -37,11 +46,17 @@
         // Behaviour Methods
         public void OnMouseEnter()
         {
+            if (!OnTurnCheck(PieceColor) || _MeshRenderer.material == _HighlightedMaterial)
+                return;
+
             _MeshRenderer.material = _HighlightedMaterial;
         }
 
         public void OnMouseExit()
         {
+            if (_MeshRenderer.material == _NormalMaterial)
+                return;
+
             _MeshRenderer.material = _NormalMaterial;
         }
 
