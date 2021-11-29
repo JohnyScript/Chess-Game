@@ -1,11 +1,9 @@
 ﻿namespace Chess.Pieces
 {
-    using System;
-
     using UnityEngine;
 
-    using Managers;
     using Enums;
+    using Managers;
 
     [RequireComponent(typeof(Rigidbody))]
     public class Piece : MonoBehaviour
@@ -16,8 +14,9 @@
         // Constants
         private const string PIECE_MATERIALS_PATH = "Materials/Pieces/";
 
-        [HideInInspector]
-        public EPieceColor PieceColor { get; private set; }
+        // Fields
+        private EPieceColor _PieceColor;
+        private EPiece _PieceType;
 
         private MeshRenderer _MeshRenderer;
 
@@ -26,9 +25,10 @@
 
         private event TurnCheck OnTurnCheck;
 
-        public void Init(EPieceColor pieceColor, Vector3 startingPosition, int startingRotation, TurnCheck turnCheck)
+        public void Init(EPieceColor pieceColor, EPiece pieceType,Vector3 startingPosition, int startingRotation, TurnCheck turnCheck)
         {
-            PieceColor = pieceColor;
+            _PieceColor = pieceColor;
+            _PieceType = pieceType;
 
             transform.position = startingPosition;
             transform.rotation = Quaternion.Euler(0, startingRotation, 0);
@@ -46,7 +46,7 @@
         // Behaviour Methods
         public void OnMouseEnter()
         {
-            if (!OnTurnCheck(PieceColor) || _MeshRenderer.material == _HighlightedMaterial)
+            if (!OnTurnCheck(_PieceColor) || _MeshRenderer.material == _HighlightedMaterial)
                 return;
 
             _MeshRenderer.material = _HighlightedMaterial;
@@ -60,5 +60,11 @@
             _MeshRenderer.material = _NormalMaterial;
         }
 
+        public virtual void MovePiece(Vector3 targetPosition)
+        {
+            // Implement movment code using bezier curvas?
+        }
+
+        //public abstract int[,] GenerateLegalMoves();
     }
 }

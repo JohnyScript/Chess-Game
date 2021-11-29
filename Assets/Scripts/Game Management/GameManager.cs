@@ -1,21 +1,20 @@
 namespace Chess.Managers
 {
-    using System;
-    using System.Collections;
-    using System.Collections.Generic;
     using UnityEngine;
 
     using Grid;
     using Pieces;
     using Enums;
+    using camera;
 
     public class GameManager : MonoBehaviour
     {
-        // Resources to Load
+        // Constants
         private const string BOARD_MATERIALS_PATH = "Materials/Board/Normal";
         private const string PIECES_MOVEMENT_MATERIAL_PATH = "Materials/Board/Movement";
         private const string PIECES_PREFABS_PATH = "Prefabs/Pieces/";
 
+        // Fields
         private Material[] _NormalNodeMaterials;
         private Material _NodeHighlightMaterial;
 
@@ -35,12 +34,17 @@ namespace Chess.Managers
 
         // Properties
 
+        private CameraMovement _CameraMovement;
+
         public static ETurn CurrentTurn = ETurn.White;
 
         public static int TurnsElapsed;
 
         private void Start()
         {
+            _CameraMovement = FindObjectOfType<CameraMovement>();
+            _CameraMovement.Init();
+
             _NormalNodeMaterials = Resources.LoadAll<Material>(BOARD_MATERIALS_PATH);
             _NodeHighlightMaterial = Resources.LoadAll<Material>(PIECES_MOVEMENT_MATERIAL_PATH)[0];
 
@@ -51,7 +55,7 @@ namespace Chess.Managers
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.A))
-                GameManager.ChangeTurn();
+                ChangeTurn();
         }
 
         private void SetupGrid()
@@ -105,7 +109,7 @@ namespace Chess.Managers
 
                     instantiatedPiece = Instantiate(Resources.Load<GameObject>(PIECES_PREFABS_PATH + _BoardPieces[x, y].ToString()));
                     piece = instantiatedPiece.AddComponent<Piece>();
-                    piece.Init(pieceColor, new Vector3(y, .1f , x), x > 2 ? 180 : 0, CheckIfPlayerTurn);
+                    piece.Init(pieceColor, _BoardPieces[x, y], new Vector3(y, .1f , x), x > 2 ? 180 : 0, CheckIfPlayerTurn);
                     piece.transform.SetParent(pieceColor == EPieceColor.White ? whites.transform : blacks.transform);
 
                     _GameBoard[x, y] = new BoardNode(piece, gridNode);
@@ -118,10 +122,16 @@ namespace Chess.Managers
             return CurrentTurn.ToString().Equals(pieceColor.ToString());
         }
 
-        public static void ChangeTurn()
+        public void ChangeTurn()
         {
             TurnsElapsed++;
             CurrentTurn = (ETurn)(TurnsElapsed % 2);
+            _CameraMovement.RotateCamera(CurrentTurn);
+        }
+
+        public void ShowLegalMoves(int[,] legalMoves)
+        {
+            //for(int i = 0)
         }
     }
 }
