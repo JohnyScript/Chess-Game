@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Prefabs
+  m_EditorClassIdentifier: 
+  m_GroupName: Prefabs
+  m_Data:
+    m_SerializedData: []
+  m_GUID: ce8f22402713a4934a60c3d5d2b92a41
+  m_SerializeEntries:
+  - m_GUID: d294a49838ab84da9ad2854a5e55168b
+    m_Address: Rook
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Pieces
+  - m_GUID: a0be14839d9ae44cba57972e5f5874c2
+    m_Address: Bishop
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Pieces
+  - m_GUID: 8368b6834e5284ec5921ca763ef78387
+    m_Address: King
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Pieces
+  - m_GUID: 03b8d6408709a440c8b0c0f45288f8e4
+    m_Address: Knight
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Pieces
+  - m_GUID: 864872f5aa7fc4f3ab6f1d0830398b81
+    m_Address: Queen
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Pieces
+  - m_GUID: e61354f97575e452494bf72da2e33959
+    m_Address: Pawn
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Pieces
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 3a0be2628df9943efb28da6ff7e7567a, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: d0ddfe23c126b4cbfa8ba05d0954e36c, type: 2}
+    - {fileID: 11400000, guid: 161ce252d9e234e38b563cec17da144b, type: 2}
