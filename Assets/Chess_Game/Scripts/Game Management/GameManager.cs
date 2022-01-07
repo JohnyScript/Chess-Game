@@ -7,13 +7,16 @@ namespace Chess.Managers
     using Pieces;
     using Enums;
     using camera;
+    using UnityEngine.AddressableAssets;
+    using UnityEngine.ResourceManagement.AsyncOperations;
+    using System.Collections.Generic;
 
     public class GameManager : MonoBehaviour
     {
         // Constants
-        private const string BOARD_MATERIALS_PATH = "Materials/Board/Normal";
-        private const string PIECES_MOVEMENT_MATERIAL_PATH = "Materials/Board/Movement";
-        private const string PIECES_PREFABS_PATH = "Prefabs/Pieces/";
+        private const string BOARD_MATERIALS_ADDRESS = "Materials/Board/Normal";
+        private const string PIECES_MOVEMENT_MATERIAL_ADDRESS = "Materials/Board/Movement";
+        private const string PIECES_PREFABS_ADDRESS = "Prefabs/Pieces/";
 
         // Fields
         private Material[] _NormalNodeMaterials;
@@ -43,8 +46,8 @@ namespace Chess.Managers
         {
             CameraMovement.instance.Init();
 
-            _NormalNodeMaterials = Resources.LoadAll<Material>(BOARD_MATERIALS_PATH);
-            _NodeHighlightMaterial = Resources.LoadAll<Material>(PIECES_MOVEMENT_MATERIAL_PATH)[0];
+            _NormalNodeMaterials = Resources.LoadAll<Material>(BOARD_MATERIALS_ADDRESS);
+            _NodeHighlightMaterial = Resources.LoadAll<Material>(PIECES_MOVEMENT_MATERIAL_ADDRESS)[0];
 
             await SetupGrid();
         }
@@ -105,7 +108,9 @@ namespace Chess.Managers
 
                     pieceColor = x < 2 ? EPieceColor.White : EPieceColor.Black;
 
-                    instantiatedPiece = Instantiate(Resources.Load<GameObject>(PIECES_PREFABS_PATH + _BoardPieces[x, y].ToString()));
+                    
+
+                    instantiatedPiece = Instantiate(Resources.Load<GameObject>(PIECES_PREFABS_ADDRESS + _BoardPieces[x, y].ToString()));
                     piece = instantiatedPiece.AddComponent<Piece>();
                     piece.Init(pieceColor, _BoardPieces[x, y], new Vector3(y, .1f , x), x > 2 ? 180 : 0, CheckIfPlayerTurn);
                     piece.transform.SetParent(pieceColor == EPieceColor.White ? whites.transform : blacks.transform);

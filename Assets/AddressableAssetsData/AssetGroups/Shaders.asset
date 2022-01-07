@@ -12,11 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
   m_Name: Shaders
   m_EditorClassIdentifier: 
-  m_GroupName: Packed Assets
+  m_GroupName: Shaders
   m_Data:
     m_SerializedData: []
   m_GUID: a2063266961524a75b48b9e799817b75
-  m_SerializeEntries: []
+  m_SerializeEntries:
+  - m_GUID: 6fd464c5f64064c5dafa89bff3dea568
+    m_Address: Highlighted Pieces
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Pieces
+    - Shader
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 3a0be2628df9943efb28da6ff7e7567a, type: 2}
   m_SchemaSet:
