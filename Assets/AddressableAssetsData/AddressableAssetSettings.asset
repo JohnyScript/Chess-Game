@@ -91,6 +91,8 @@ MonoBehaviour:
     - Prefabs
     - Materials
     - Shader
+    - Normal
+    - Highlight
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: 04db330607a1e465cb896d1dc8d9180a, type: 2}

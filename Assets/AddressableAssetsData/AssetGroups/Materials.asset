@@ -18,42 +18,46 @@ MonoBehaviour:
   m_GUID: ee386346d52cf40738e3fba70697095d
   m_SerializeEntries:
   - m_GUID: 7b012eca65be743c7ac3b4dbfc5b672f
-    m_Address: GreyNodes
+    m_Address: BlackNodes
     m_ReadOnly: 0
     m_SerializedLabels:
-    - Board
     - Materials
+    - Normal
+    - Board
   - m_GUID: 3229c00f692cf41e6b05397e5a605565
     m_Address: WhiteNodes
     m_ReadOnly: 0
     m_SerializedLabels:
-    - Board
     - Materials
+    - Normal
+    - Board
   - m_GUID: c297e21c370e3448bb6db2a1655d1acd
-    m_Address: MovementTargetNode
+    m_Address: MovementNodes
     m_ReadOnly: 0
     m_SerializedLabels:
-    - Board
     - Materials
+    - Highlight
+    - Board
   - m_GUID: 5d9d23618dd7d470abad608095aa80dd
-    m_Address: White
+    m_Address: WhitePieces
     m_ReadOnly: 0
     m_SerializedLabels:
-    - Pieces
+    - ChessPieces
     - Materials
   - m_GUID: 790c0e5444f6345f3a0c5f0cd48b0528
-    m_Address: Black
+    m_Address: BlackPieces
     m_ReadOnly: 0
     m_SerializedLabels:
-    - Pieces
+    - ChessPieces
     - MAterials
     - Materials
   - m_GUID: 15238474c21c641ee83e3c864d6a6047
-    m_Address: Highlighted
+    m_Address: HighlightPieces
     m_ReadOnly: 0
     m_SerializedLabels:
-    - Pieces
+    - ChessPieces
     - Materials
+    - Highlight
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 3a0be2628df9943efb28da6ff7e7567a, type: 2}
   m_SchemaSet:

@@ -21,7 +21,7 @@ MonoBehaviour:
     m_Address: Highlighted Pieces
     m_ReadOnly: 0
     m_SerializedLabels:
-    - Pieces
+    - ChessPieces
     - Shader
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 3a0be2628df9943efb28da6ff7e7567a, type: 2}

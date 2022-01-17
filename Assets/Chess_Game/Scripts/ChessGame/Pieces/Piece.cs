@@ -1,18 +1,15 @@
 ﻿namespace Chess.Pieces
 {
     using UnityEngine;
+    using UnityEngine.AddressableAssets;
 
     using Enums;
-    using Managers;
 
     [RequireComponent(typeof(Rigidbody))]
     public class Piece : MonoBehaviour
     {
         // Delegates
         public delegate bool TurnCheck(EPieceColor pieceColor);
-
-        // Constants
-        private const string PIECE_MATERIALS_PATH = "Materials/Pieces/";
 
         // Fields
         private EPieceColor _PieceColor;
@@ -25,7 +22,7 @@
 
         private event TurnCheck OnTurnCheck;
 
-        public void Init(EPieceColor pieceColor, EPiece pieceType,Vector3 startingPosition, int startingRotation, TurnCheck turnCheck)
+        public async void Init(EPieceColor pieceColor, EPiece pieceType, Vector3 startingPosition, int startingRotation, TurnCheck turnCheck)
         {
             _PieceColor = pieceColor;
             _PieceType = pieceType;
@@ -37,8 +34,8 @@
 
             _MeshRenderer = GetComponent<MeshRenderer>();
 
-            _NormalMaterial = Resources.Load<Material>(PIECE_MATERIALS_PATH + pieceColor.ToString());
-            _HighlightedMaterial = Resources.Load<Material>(PIECE_MATERIALS_PATH + "Highlighted");
+            _NormalMaterial = await AddressablesUtils.LoadAssetAsyncAndReleaseHandle<Material>($"{pieceColor}Pieces");
+            _HighlightedMaterial = await AddressablesUtils.LoadAssetAsyncAndReleaseHandle<Material>("HighlightPieces");
 
             _MeshRenderer.material = _NormalMaterial;
         }
