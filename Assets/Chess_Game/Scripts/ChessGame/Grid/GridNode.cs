@@ -21,6 +21,11 @@
             ChangeNodeMaterial(_NormalMaterial);
         }
 
+        public void OnMouseDown()
+        {
+            throw new System.NotImplementedException();
+        }
+
         public void ChangeNodeMaterial()
         {
             _MeshRenderer.material = _NormalMaterial;
@@ -43,5 +48,6 @@
         {
             _IsOccupied = isOccupied;
         }
+
     }
 }

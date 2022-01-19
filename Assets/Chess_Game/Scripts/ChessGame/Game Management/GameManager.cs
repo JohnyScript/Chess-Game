@@ -79,13 +79,11 @@ namespace Chess.Managers
                 for (int y = 0; y < _GameBoard.GetLength(1); y++)
                 {
                     // Board Generation
-                    quad = Instantiate(boardNodePrefab);
-                    quad.transform.position = new Vector3(y, 0, x);
-                    quad.transform.SetParent(rowObject.transform);
+                    quad = Instantiate(boardNodePrefab, new Vector3(y, 0, x), boardNodePrefab.transform.rotation, rowObject.transform);
                     quad.name = $"{rowObject.name}{y + 1}";
                     quad.layer = LayerMask.NameToLayer("Board");
 
-                    gridNode = quad.GetComponent<GridNode>();
+                    gridNode = quad.AddComponent<GridNode>();
                     gridNode.Init(_NormalNodeMaterials[(x + y) % 2], _BoardPieces[x,y] != EPiece.Empty);
 
                     // Piece Generation
@@ -96,7 +94,7 @@ namespace Chess.Managers
 
                     instantiatedPiece = Instantiate(await AddressablesUtils.LoadAssetAsyncAndReleaseHandle<GameObject>(_BoardPieces[x, y].ToString()));
                     piece = instantiatedPiece.AddComponent<Piece>();
-                    piece.Init(pieceColor, _BoardPieces[x, y], new Vector3(y, .1f , x), x > 2 ? 180 : 0, CheckIfPlayerTurn);
+                    piece.Init(_BoardPieces[x, y], pieceColor, new Vector3(y, .1f , x), x > 2 ? 180 : 0, CheckIfPlayerTurn);
                     piece.transform.SetParent(pieceColor == EPieceColor.White ? _WhitePiecesContainer.transform : _BlackPiecesContainer.transform);
 
                     _GameBoard[x, y] = new BoardNode(piece, gridNode);
