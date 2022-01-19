@@ -107,11 +107,13 @@ namespace Chess.Managers
             return CurrentTurn.Equals(pieceColor);
         }
 
-        public void ChangeTurn()
+        public async void ChangeTurn()
         {
             TurnsElapsed++;
-            CurrentTurn = (EPieceColor)(TurnsElapsed % 2);
-            CameraMovement.instance.RotateCamera(CurrentTurn);
+            CurrentTurn = EPieceColor.None;
+            int nextTurn = TurnsElapsed % 2;
+            await CameraMovement.instance.RotateCamera((EPieceColor)nextTurn);
+            CurrentTurn = (EPieceColor)nextTurn;
         }
 
         public void ShowLegalMoves(int[,] legalMoves)

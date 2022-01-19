@@ -4,16 +4,14 @@
 
     using UnityEngine;
 
-    using System.Collections;
+    using System;
+    using System.Threading.Tasks;
 
+    [RequireComponent(typeof(Animator))]
     public class CameraMovement : MonoBehaviour
     {
         public static CameraMovement instance;
-
-        //Have an event that when triggered rotates camera to the correct position
-        private Quaternion[] _CameraTurnRotations = new Quaternion[2];
-
-        private float _TimeToCompleteRotation = 1.5f;
+        private Animator _CameraAnimator;
 
         public void Awake()
         {
@@ -25,29 +23,14 @@
 
         public void Init()
         {
-            Quaternion startingRotation = transform.rotation;
-            _CameraTurnRotations[0] = startingRotation;
-            _CameraTurnRotations[1] = Quaternion.Euler(startingRotation.x, startingRotation.y - 180, startingRotation.z);
+            _CameraAnimator = GetComponent<Animator>();
         }
 
-        public void RotateCamera(EPieceColor currentTurn)
+        public async Task RotateCamera(EPieceColor currentTurn)
         {
-            StartCoroutine(CameraRotation(currentTurn));
-        }
-
-        private IEnumerator CameraRotation(EPieceColor currentTurn)
-        {
-            float timeCount = 0.0f;
-            Quaternion _currentRot = transform.rotation;
-
-            while (timeCount < _TimeToCompleteRotation)
-            {
-                transform.rotation = Quaternion.Slerp(_currentRot, _CameraTurnRotations[(int)currentTurn % 2], timeCount / _TimeToCompleteRotation);
-                timeCount += Time.deltaTime;
-                yield return null;
-            }
-
-            transform.rotation = _CameraTurnRotations[(int)currentTurn % 2];
+            _CameraAnimator.SetTrigger(currentTurn.ToString());
+            AnimationClip currentlyPlayingClip = Array.Find(_CameraAnimator.runtimeAnimatorController.animationClips, (clip) => clip.name.Contains(currentTurn.ToString()));
+            await Task.Delay((int)(currentlyPlayingClip.length * 1000));
         }
     }
 }

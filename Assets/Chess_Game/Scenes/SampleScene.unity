@@ -133,6 +133,7 @@ GameObject:
   m_Component:
   - component: {fileID: 20225819}
   - component: {fileID: 20225821}
+  - component: {fileID: 20225822}
   m_Layer: 0
   m_Name: Camera And Light Holder
   m_TagString: Untagged
@@ -169,6 +170,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e181d64a7a87e4c17b7ce31affd36f88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!95 &20225822
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 20225818}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: dcacba9ef3f354dd5beb0be2aa4cf95d, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &124817291
 GameObject:
   m_ObjectHideFlags: 0

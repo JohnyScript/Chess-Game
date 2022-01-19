@@ -2,7 +2,8 @@
 {
     public enum EPieceColor
     {
-        White,
-        Black
+        White = 0,
+        Black = 1,
+        None = 2
     }
 }

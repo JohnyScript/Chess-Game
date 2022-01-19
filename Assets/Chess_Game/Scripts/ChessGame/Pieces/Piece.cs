@@ -45,8 +45,7 @@
             transform.rotation = Quaternion.Euler(0, startingRotation, 0);
 
             OnTurnCheck = turnCheck;
-            if (OnCacheClear.GetInvocationList().Length < 1)
-                OnCacheClear = ClearCachedLegalMoves;
+            OnCacheClear += ClearCachedLegalMoves;
 
             _MeshRenderer = GetComponent<MeshRenderer>();
 
@@ -80,6 +79,11 @@
             _MeshRenderer.material = _NormalMaterial;
         }
 
+        public Vector2Int[][] GetNextMovementPoints()
+        {
+            throw new System.NotImplementedException();
+        }
+
         public void MovePiece(Vector2Int distination)
         {
             throw new System.NotImplementedException();
@@ -89,6 +93,7 @@
         public Vector2Int[][] GetLegalMoves()
         {
             throw new System.NotImplementedException();
+            Vector2Int[][] temp = _CurrentLegalMoves[_PieceColor][_PieceType];
         }
 
         private void ClearCachedLegalMoves()
