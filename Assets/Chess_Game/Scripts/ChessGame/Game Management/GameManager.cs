@@ -22,7 +22,6 @@ namespace Chess.Managers
         private GameObject _BlackPiecesContainer;
 
         private List<Material> _NormalNodeMaterials;
-        private Material _NodeHighlightMaterial;
 
         private EPiece[,] _BoardPieces = new EPiece[8, 8]
         {
@@ -49,7 +48,6 @@ namespace Chess.Managers
             CameraMovement.instance.Init();
 
             _NormalNodeMaterials = new (await AddressablesUtils.LoadAssetsAsyncAndReleaseHandle<Material>(new List<string>{"Board", "Normal"}));
-            _NodeHighlightMaterial = await AddressablesUtils.LoadAssetAsyncAndReleaseHandle<Material>("MovementNodes");
 
             await SetupGrid();
         }
@@ -88,13 +86,16 @@ namespace Chess.Managers
 
                     // Piece Generation
                     if (_BoardPieces[x, y] == EPiece.Empty)
+                    {
+                        _GameBoard[x, y] = new BoardNode(null, gridNode);
                         continue;
+                    }
 
                     pieceColor = x < 2 ? EPieceColor.White : EPieceColor.Black;
 
                     instantiatedPiece = Instantiate(await AddressablesUtils.LoadAssetAsyncAndReleaseHandle<GameObject>(_BoardPieces[x, y].ToString()));
                     piece = instantiatedPiece.AddComponent<Piece>();
-                    piece.Init(_BoardPieces[x, y], pieceColor, new Vector3(y, .1f , x), x > 2 ? 180 : 0, CheckIfPlayerTurn);
+                    piece.Init(_BoardPieces[x, y], pieceColor, new Vector3(y, .1f , x), x > 2 ? 180 : 0, CheckIfPlayerTurn, ShowLegalMoves);
                     piece.transform.SetParent(pieceColor == EPieceColor.White ? _WhitePiecesContainer.transform : _BlackPiecesContainer.transform);
 
                     _GameBoard[x, y] = new BoardNode(piece, gridNode);
@@ -116,9 +117,12 @@ namespace Chess.Managers
             CurrentTurn = (EPieceColor)nextTurn;
         }
 
-        public void ShowLegalMoves(int[,] legalMoves)
+        public void ShowLegalMoves(Vector2Int[] legalMoves)
         {
-            //for(int i = 0)
+            for(int i = 0; i < legalMoves.Length; i++)
+            {
+                _GameBoard[legalMoves[i].y, legalMoves[i].x].Node.HighlightNode();
+            }
         }
     }
 }

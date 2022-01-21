@@ -2,23 +2,27 @@
 {
     using UnityEngine;
 
+    using UnityEngine.AddressableAssets;
+
     /// <summary>Represents a square on the chess board </summary>
     public class GridNode : MonoBehaviour
     {
         private MeshRenderer _MeshRenderer;
 
         private Material _NormalMaterial;
+        private Material _NodeHighlightMaterial;
 
         private bool _IsOccupied;
 
-        public void Init(Material normalMaterial, bool isOccupied)
+        public async void Init(Material normalMaterial, bool isOccupied)
         {
             _NormalMaterial = normalMaterial;
+            _NodeHighlightMaterial = await AddressablesUtils.LoadAssetAsyncAndReleaseHandle<Material>("MovementNodes");
             _IsOccupied = isOccupied;
 
             _MeshRenderer = gameObject.GetComponent<MeshRenderer>();
 
-            ChangeNodeMaterial(_NormalMaterial);
+            SetNodeToNormal();
         }
 
         public void OnMouseDown()
@@ -26,14 +30,14 @@
             throw new System.NotImplementedException();
         }
 
-        public void ChangeNodeMaterial()
+        public void SetNodeToNormal()
         {
             _MeshRenderer.material = _NormalMaterial;
         }
 
-        public void ChangeNodeMaterial(Material materialToUse)
+        public void HighlightNode()
         {
-            _MeshRenderer.material = materialToUse;
+            _MeshRenderer.material = _NodeHighlightMaterial;
         }
 
         /// <summary>Checks or Sets the node's occupied state;</summary>
