@@ -59,5 +59,4 @@ sysinfo.txt
 crashlytics-build.properties
 
 # Testing Folders
-*/[Tt]esting/*
-
+Assets/Chess_Game/Scripts/ChessGame/Testing/
