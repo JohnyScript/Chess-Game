@@ -1,4 +1,4 @@
-namespace Chess.Managers
+namespace Chess
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
@@ -6,9 +6,8 @@ namespace Chess.Managers
     using UnityEngine;
     using UnityEngine.AddressableAssets;
 
-    using Grid;
+    using Board;
     using Pieces;
-    using Enums;
     using camera;
 
     public class GameManager : MonoBehaviour
@@ -39,7 +38,7 @@ namespace Chess.Managers
 
         // Properties
 
-        public static EPieceColor CurrentTurn = EPieceColor.White;
+        public static EPieceColor CurrentTurn = EPieceColor.None;
 
         public static int TurnsElapsed;
 
@@ -50,6 +49,8 @@ namespace Chess.Managers
             _NormalNodeMaterials = new (await AddressablesUtils.LoadAssetsAsyncAndReleaseHandle<Material>(new List<string>{"Board", "Normal"}));
 
             await SetupGrid();
+
+            CurrentTurn = EPieceColor.White;
         }
 
 

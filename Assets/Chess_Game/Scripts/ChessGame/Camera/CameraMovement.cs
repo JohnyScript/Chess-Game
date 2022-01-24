@@ -1,11 +1,11 @@
 ﻿namespace Chess.camera
 {
-    using Enums;
-
     using UnityEngine;
 
     using System;
     using System.Threading.Tasks;
+
+    using Pieces;
 
     [RequireComponent(typeof(Animator))]
     public class CameraMovement : MonoBehaviour

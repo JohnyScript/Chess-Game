@@ -6,8 +6,6 @@
     using UnityEngine;
     using UnityEngine.AddressableAssets;
 
-    using Enums;
-
     [RequireComponent(typeof(Rigidbody))]
     public class Piece : MonoBehaviour, IMove
     {
@@ -151,7 +149,7 @@
             if (!OnTurnCheck(_PieceColor))
                 return;
 
-            GetLegalMoves(new Vector2Int(5, 5));
+            GetLegalMoves(new Vector2Int(3, 3));
         }
 
         public void OnMouseExit()
@@ -194,16 +192,36 @@
             }
 
             Vector2Int currentMoveBeingCalculated;
+            Vector2Int[] currentPieceMovementPoints = pieceMovement._PieceMovementPoints;
 
-            for(int index = 0; index < pieceMovement._PieceMovementPoints.Length; index++)
-                for(int directionIteration = 0; directionIteration < 8; directionIteration++)
+            for (int index = 0; index < currentPieceMovementPoints.Length; index++)
+            {
+                for (int currentMove = 1; currentMove <= 8; currentMove++)
                 {
-                    //currentMoveBeingCalculated = currentPosition + ()
+                    currentMoveBeingCalculated = currentPosition + (currentPieceMovementPoints[index] * currentMove);
+
+                    if (IsPositionOutOfBounds(currentMoveBeingCalculated))
+                        break;
+
+                    legalMoves.Add(currentMoveBeingCalculated);
+
                 }
+            }
 
             _CachedLegalMoves = legalMoves.ToArray();
             OnLegalMovesDisplay.Invoke(_CachedLegalMoves);
             return _CachedLegalMoves;
+        }
+
+        private bool IsPositionOutOfBounds(Vector2Int currentPosition)
+        {
+            if (currentPosition.x >= 8 || currentPosition.x < 0)
+                return true;
+
+            if (currentPosition.y >= 8 || currentPosition.y < 0)
+                return true;
+
+            return false;
         }
 
         private void ClearCachedLegalMoves()
