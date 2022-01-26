@@ -12,46 +12,42 @@
         private Material _NormalMaterial;
         private Material _NodeHighlightMaterial;
 
-        private bool _IsOccupied;
+        private bool _IsHighlighted;
 
         public async void Init(Material normalMaterial, bool isOccupied)
         {
             _NormalMaterial = normalMaterial;
             _NodeHighlightMaterial = await AddressablesUtils.LoadAssetAsyncAndReleaseHandle<Material>("MovementNodes");
-            _IsOccupied = isOccupied;
 
             _MeshRenderer = gameObject.GetComponent<MeshRenderer>();
 
-            SetNodeToNormal();
+            _MeshRenderer.material = _NormalMaterial;
         }
 
         public void OnMouseDown()
         {
+            if (!_IsHighlighted)
+                return;
+
             throw new System.NotImplementedException();
         }
 
         public void SetNodeToNormal()
         {
+            if (!_IsHighlighted)
+                return;
+
             _MeshRenderer.material = _NormalMaterial;
+            _IsHighlighted = false;
         }
 
         public void HighlightNode()
         {
+            if (_IsHighlighted)
+                return;
+
             _MeshRenderer.material = _NodeHighlightMaterial;
+            _IsHighlighted = true;
         }
-
-        /// <summary>Checks or Sets the node's occupied state;</summary>
-        public bool GetOrSetState()
-        {
-            return _IsOccupied;
-        }
-
-        /// <summary>Checks or Sets the node's occupied state; </summary>
-        /// <param name="isOccupied">The new occupied state of the node</param>
-        public void GetOrSetState(bool isOccupied)
-        {
-            _IsOccupied = isOccupied;
-        }
-
     }
 }

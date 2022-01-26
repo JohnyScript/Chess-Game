@@ -162,6 +162,8 @@
             _MeshRenderer.material = _NormalMaterial;
         }
 
+        public EPieceColor GetPieceColor() => _PieceColor;
+
         public void MovePiece(Vector2Int distination)
         {
             throw new NotImplementedException();
@@ -181,32 +183,28 @@
             PieceMovement pieceMovement = _PieceMovementPointsByPieceType[_PieceType];
             List<Vector2Int> legalMoves = new();
 
-            if(pieceMovement._PieceMovementType == EPieceMovementType.Jump)
+            Vector2Int currentMoveBeingCalculated = currentPosition;
+
+            foreach (Vector2Int pieceMovementPoint in pieceMovement._PieceMovementPoints)
             {
-                for (int i = 0; i < pieceMovement._PieceMovementPoints.Length; i++)
+                if (pieceMovement._PieceMovementType == EPieceMovementType.Jump)
                 {
-                   legalMoves.Add(currentPosition + pieceMovement._PieceMovementPoints[i]);
+                    currentMoveBeingCalculated += pieceMovementPoint;
+                    if (IsPositionOutOfBounds(currentMoveBeingCalculated))
+                        continue;
+
+                    legalMoves.Add(currentMoveBeingCalculated);
+                    continue;
                 }
 
-                _CachedLegalMoves = legalMoves.ToArray();
-                _OnLegalMovesDisplay.Invoke(_CachedLegalMoves);
-                return _CachedLegalMoves;
-            }
-
-            Vector2Int currentMoveBeingCalculated;
-            Vector2Int[] currentPieceMovementPoints = pieceMovement._PieceMovementPoints;
-
-            for (int index = 0; index < currentPieceMovementPoints.Length; index++)
-            {
                 for (int currentMove = 1; currentMove <= 8; currentMove++)
                 {
-                    currentMoveBeingCalculated = currentPosition + (currentPieceMovementPoints[index] * currentMove);
+                    currentMoveBeingCalculated += pieceMovementPoint * currentMove;
 
                     if (IsPositionOutOfBounds(currentMoveBeingCalculated))
                         break;
 
                     legalMoves.Add(currentMoveBeingCalculated);
-
                 }
             }
 
@@ -215,15 +213,20 @@
             return _CachedLegalMoves;
         }
 
-        private bool IsPositionOutOfBounds(Vector2Int currentPosition)
+        private bool IsPositionOutOfBounds(Vector2Int positionBeingChecked)
         {
-            if (currentPosition.x >= 8 || currentPosition.x < 0)
+            if (positionBeingChecked.x >= 8 || positionBeingChecked.x < 0)
                 return true;
 
-            if (currentPosition.y >= 8 || currentPosition.y < 0)
+            if (positionBeingChecked.y >= 8 || positionBeingChecked.y < 0)
                 return true;
 
             return false;
+        }
+
+        private bool IsPositionOccupied(Vector2Int positionBeingChecked)
+        {
+
         }
 
         private void ClearCachedLegalMoves()

@@ -43,7 +43,7 @@ namespace Chess
         {
             CameraMovement.instance.Init();
 
-            _NormalNodeMaterials = new (await AddressablesUtils.LoadAssetsAsyncAndReleaseHandle<Material>(new List<string>{"Board", "Normal"}));
+            _NormalNodeMaterials = new(await AddressablesUtils.LoadAssetsAsyncAndReleaseHandle<Material>(new List<string> { "Board", "Normal" }));
 
             await SetupGrid();
 
@@ -79,7 +79,7 @@ namespace Chess
                     quad.layer = LayerMask.NameToLayer("Board");
 
                     gridNode = quad.AddComponent<GridNode>();
-                    gridNode.Init(_NormalNodeMaterials[(x + y) % 2], _BoardPieces[x,y] != EPiece.Empty);
+                    gridNode.Init(_NormalNodeMaterials[(x + y) % 2], _BoardPieces[x, y] != EPiece.Empty);
 
                     // Piece Generation
                     if (_BoardPieces[x, y] == EPiece.Empty)
@@ -92,7 +92,7 @@ namespace Chess
 
                     instantiatedPiece = Instantiate(await AddressablesUtils.LoadAssetAsyncAndReleaseHandle<GameObject>(_BoardPieces[x, y].ToString()));
                     piece = instantiatedPiece.AddComponent<Piece>();
-                    piece.Init(_BoardPieces[x, y], pieceColor, new Vector3(y, .1f , x), x > 2 ? 180 : 0, CheckIfPlayerTurn, GetPiecePosition, ShowLegalMoves);
+                    piece.Init(_BoardPieces[x, y], pieceColor, new Vector3(y, .1f, x), x > 2 ? 180 : 0, CheckIfPlayerTurn, GetPieceCurrentPosition, ShowLegalMoves);
                     piece.transform.SetParent(pieceColor == EPieceColor.White ? _WhitePiecesContainer.transform : _BlackPiecesContainer.transform);
 
                     _GameBoard[x, y] = new BoardNode(piece, gridNode);
@@ -114,11 +114,11 @@ namespace Chess
             CurrentTurn = (EPieceColor)nextTurn;
         }
 
-        public Vector2Int GetPiecePosition(Piece piece)
+        public Vector2Int GetPieceCurrentPosition(Piece piece)
         {
-            for(int x = 0; x < _GameBoard.GetLength(0); x++)
+            for (int x = 0; x < _GameBoard.GetLength(0); x++)
             {
-                for(int y = 0; y < _GameBoard.GetLength(1); y++)
+                for (int y = 0; y < _GameBoard.GetLength(1); y++)
                 {
                     if (_GameBoard[x, y].Piece != piece)
                         continue;
@@ -132,9 +132,11 @@ namespace Chess
 
         public void ShowLegalMoves(Vector2Int[] legalMoves)
         {
-            for(int i = 0; i < legalMoves.Length; i++)
+            BoardNode.NormalizeNode.Invoke();
+
+            foreach(Vector2Int legalMove in legalMoves)
             {
-                _GameBoard[legalMoves[i].y, legalMoves[i].x].Node.HighlightNode();
+                _GameBoard[legalMove.y, legalMove.x].HighlightGridNode();
             }
         }
     }

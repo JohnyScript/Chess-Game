@@ -10,10 +10,13 @@
 
         public GridNode Node { get; private set; }
 
+        public static Action NormalizeNode;
+
         public BoardNode(Piece piece, GridNode node)
         {
             Piece = piece;
             Node = node;
+            NormalizeNode += node.SetNodeToNormal;
         }
 
         /// <summary>Sets if the current board square has a piece on top of it</summary>
@@ -21,7 +24,12 @@
         public void SetNodeState(Piece piece = null)
         {
             Piece = piece;
-            Node.GetOrSetState(piece != null);
         }
+
+        public EPieceColor GetPieceColor() => Piece.GetPieceColor();
+
+        public bool GetNodeState() => Piece != null;
+
+        public void HighlightGridNode() => Node.HighlightNode();
     }
 }
