@@ -112,11 +112,12 @@
 
         private Vector2Int[] _CachedLegalMoves;
 
-        private event TurnCheck OnTurnCheck;
-        private event LegalMovesDisplay OnLegalMovesDisplay;
-        private static event CacheCear OnCacheClear;
+        private event TurnCheck _OnTurnCheck;
+        private Func<Piece, Vector2Int> _OnPiecePositionRequest;
+        private event LegalMovesDisplay _OnLegalMovesDisplay;
+        private static event CacheCear _OnCacheClear;
 
-        public async void Init(EPiece pieceType, EPieceColor pieceColor, Vector3 startingPosition, int startingRotation, TurnCheck turnCheck, LegalMovesDisplay movesDisplay)
+        public async void Init(EPiece pieceType, EPieceColor pieceColor, Vector3 startingPosition, int startingRotation, TurnCheck turnCheck, Func<Piece, Vector2Int> piecePositionRequest, LegalMovesDisplay movesDisplay)
         {
             _PieceType = pieceType;
             _PieceColor = pieceColor;
@@ -124,9 +125,10 @@
             transform.position = startingPosition;
             transform.rotation = Quaternion.Euler(0, startingRotation, 0);
 
-            OnTurnCheck = turnCheck;
-            OnLegalMovesDisplay = movesDisplay;
-            OnCacheClear += ClearCachedLegalMoves;
+            _OnTurnCheck = turnCheck;
+            _OnPiecePositionRequest = piecePositionRequest;
+            _OnLegalMovesDisplay = movesDisplay;
+            _OnCacheClear += ClearCachedLegalMoves;
 
             _MeshRenderer = GetComponent<MeshRenderer>();
 
@@ -138,7 +140,7 @@
 
         public void OnMouseEnter()
         {
-            if (!OnTurnCheck(_PieceColor) || _MeshRenderer.material == _HighlightedMaterial)
+            if (!_OnTurnCheck(_PieceColor) || _MeshRenderer.material == _HighlightedMaterial)
                 return;
 
             _MeshRenderer.material = _HighlightedMaterial;
@@ -146,10 +148,10 @@
 
         public void OnMouseDown()
         {
-            if (!OnTurnCheck(_PieceColor))
+            if (!_OnTurnCheck(_PieceColor))
                 return;
 
-            GetLegalMoves(new Vector2Int(3, 3));
+            GetLegalMoves(_OnPiecePositionRequest(this));
         }
 
         public void OnMouseExit()
@@ -164,7 +166,7 @@
         {
             throw new NotImplementedException();
 
-            OnCacheClear.Invoke();
+            _OnCacheClear.Invoke();
         }
 
         public Vector2Int[] GetLegalMoves(Vector2Int currentPosition)
@@ -172,7 +174,7 @@
             // If the player has already selected this Piece then only the cached LegalMoves need to be return
             if (_CachedLegalMoves != null)
             {
-                OnLegalMovesDisplay.Invoke(_CachedLegalMoves);
+                _OnLegalMovesDisplay.Invoke(_CachedLegalMoves);
                 return _CachedLegalMoves;
             }
 
@@ -187,7 +189,7 @@
                 }
 
                 _CachedLegalMoves = legalMoves.ToArray();
-                OnLegalMovesDisplay.Invoke(_CachedLegalMoves);
+                _OnLegalMovesDisplay.Invoke(_CachedLegalMoves);
                 return _CachedLegalMoves;
             }
 
@@ -209,7 +211,7 @@
             }
 
             _CachedLegalMoves = legalMoves.ToArray();
-            OnLegalMovesDisplay.Invoke(_CachedLegalMoves);
+            _OnLegalMovesDisplay.Invoke(_CachedLegalMoves);
             return _CachedLegalMoves;
         }
 

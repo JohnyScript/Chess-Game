@@ -6,11 +6,10 @@ namespace Chess
     using UnityEngine;
     using UnityEngine.AddressableAssets;
 
-    using Board;
     using Pieces;
     using camera;
 
-    public class GameManager : MonoBehaviour
+    public class ChessBoard : MonoBehaviour
     {
         // Fields
         [SerializeField]
@@ -36,8 +35,6 @@ namespace Chess
 
         private BoardNode[,] _GameBoard = new BoardNode[8, 8];
 
-        // Properties
-
         public static EPieceColor CurrentTurn = EPieceColor.None;
 
         public static int TurnsElapsed;
@@ -52,7 +49,6 @@ namespace Chess
 
             CurrentTurn = EPieceColor.White;
         }
-
 
         private void Update()
         {
@@ -96,7 +92,7 @@ namespace Chess
 
                     instantiatedPiece = Instantiate(await AddressablesUtils.LoadAssetAsyncAndReleaseHandle<GameObject>(_BoardPieces[x, y].ToString()));
                     piece = instantiatedPiece.AddComponent<Piece>();
-                    piece.Init(_BoardPieces[x, y], pieceColor, new Vector3(y, .1f , x), x > 2 ? 180 : 0, CheckIfPlayerTurn, ShowLegalMoves);
+                    piece.Init(_BoardPieces[x, y], pieceColor, new Vector3(y, .1f , x), x > 2 ? 180 : 0, CheckIfPlayerTurn, GetPiecePosition, ShowLegalMoves);
                     piece.transform.SetParent(pieceColor == EPieceColor.White ? _WhitePiecesContainer.transform : _BlackPiecesContainer.transform);
 
                     _GameBoard[x, y] = new BoardNode(piece, gridNode);
@@ -116,6 +112,22 @@ namespace Chess
             int nextTurn = TurnsElapsed % 2;
             await CameraMovement.instance.RotateCamera((EPieceColor)nextTurn);
             CurrentTurn = (EPieceColor)nextTurn;
+        }
+
+        public Vector2Int GetPiecePosition(Piece piece)
+        {
+            for(int x = 0; x < _GameBoard.GetLength(0); x++)
+            {
+                for(int y = 0; y < _GameBoard.GetLength(1); y++)
+                {
+                    if (_GameBoard[x, y].Piece != piece)
+                        continue;
+
+                    return new Vector2Int(y, x);
+                }
+            }
+
+            return new Vector2Int(0, 0);
         }
 
         public void ShowLegalMoves(Vector2Int[] legalMoves)
