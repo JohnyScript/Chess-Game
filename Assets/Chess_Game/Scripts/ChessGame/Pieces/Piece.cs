@@ -98,6 +98,7 @@
 
         // Delegates
         public delegate bool TurnCheck(EPieceColor pieceColor);
+        public delegate EPieceColor PositionDataCheck(int x, int y);
         public delegate void LegalMovesDisplay(Vector2Int[] allLegalMoves);
         public delegate void CacheCear();
 
@@ -114,10 +115,11 @@
 
         private event TurnCheck _OnTurnCheck;
         private Func<Piece, Vector2Int> _OnPiecePositionRequest;
+        private PositionDataCheck _OccupiedPositionCheck;
         private event LegalMovesDisplay _OnLegalMovesDisplay;
         private static event CacheCear _OnCacheClear;
 
-        public async void Init(EPiece pieceType, EPieceColor pieceColor, Vector3 startingPosition, int startingRotation, TurnCheck turnCheck, Func<Piece, Vector2Int> piecePositionRequest, LegalMovesDisplay movesDisplay)
+        public async void Init(EPiece pieceType, EPieceColor pieceColor, Vector3 startingPosition, int startingRotation)
         {
             _PieceType = pieceType;
             _PieceColor = pieceColor;
@@ -125,17 +127,21 @@
             transform.position = startingPosition;
             transform.rotation = Quaternion.Euler(0, startingRotation, 0);
 
-            _OnTurnCheck = turnCheck;
-            _OnPiecePositionRequest = piecePositionRequest;
-            _OnLegalMovesDisplay = movesDisplay;
-            _OnCacheClear += ClearCachedLegalMoves;
-
             _MeshRenderer = GetComponent<MeshRenderer>();
 
             _NormalMaterial = await AddressablesUtils.LoadAssetAsyncAndReleaseHandle<Material>($"{pieceColor}Pieces");
             _HighlightedMaterial = await AddressablesUtils.LoadAssetAsyncAndReleaseHandle<Material>("HighlightPieces");
 
             _MeshRenderer.material = _NormalMaterial;
+        }
+
+        public void AttachListeners(TurnCheck turnCheck, Func<Piece, Vector2Int> piecePositionRequest, PositionDataCheck occupiedPositionCheck, LegalMovesDisplay movesDisplay)
+        {
+            _OnTurnCheck = turnCheck;
+            _OnPiecePositionRequest = piecePositionRequest;
+            _OccupiedPositionCheck = occupiedPositionCheck;
+            _OnLegalMovesDisplay = movesDisplay;
+            _OnCacheClear += ClearCachedLegalMoves;
         }
 
         public void OnMouseEnter()
@@ -183,28 +189,34 @@
             PieceMovement pieceMovement = _PieceMovementPointsByPieceType[_PieceType];
             List<Vector2Int> legalMoves = new();
 
-            Vector2Int currentMoveBeingCalculated = currentPosition;
+            Vector2Int currentMoveBeingCalculated;
 
             foreach (Vector2Int pieceMovementPoint in pieceMovement._PieceMovementPoints)
             {
                 if (pieceMovement._PieceMovementType == EPieceMovementType.Jump)
                 {
-                    currentMoveBeingCalculated += pieceMovementPoint;
-                    if (IsPositionOutOfBounds(currentMoveBeingCalculated))
+                    currentMoveBeingCalculated = currentPosition + pieceMovementPoint;
+
+                    if (IsPositionOutOfBounds(currentMoveBeingCalculated) || IsPositionOccupied(currentMoveBeingCalculated) == _PieceColor)
                         continue;
 
                     legalMoves.Add(currentMoveBeingCalculated);
+
                     continue;
                 }
 
                 for (int currentMove = 1; currentMove <= 8; currentMove++)
                 {
-                    currentMoveBeingCalculated += pieceMovementPoint * currentMove;
+                    currentMoveBeingCalculated = currentPosition + (pieceMovementPoint * currentMove);
 
-                    if (IsPositionOutOfBounds(currentMoveBeingCalculated))
+                    if (IsPositionOutOfBounds(currentMoveBeingCalculated) || IsPositionOccupied(currentMoveBeingCalculated) == _PieceColor)
                         break;
 
                     legalMoves.Add(currentMoveBeingCalculated);
+
+                    // Hate this line but as the Enum stands it's the current only way
+                    if (IsPositionOccupied(currentMoveBeingCalculated) != EPieceColor.None)
+                        break;
                 }
             }
 
@@ -224,9 +236,9 @@
             return false;
         }
 
-        private bool IsPositionOccupied(Vector2Int positionBeingChecked)
+        private EPieceColor IsPositionOccupied(Vector2Int positionToCheck)
         {
-
+            return _OccupiedPositionCheck.Invoke(positionToCheck.x, positionToCheck.y);
         }
 
         private void ClearCachedLegalMoves()

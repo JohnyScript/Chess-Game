@@ -92,7 +92,10 @@ namespace Chess
 
                     instantiatedPiece = Instantiate(await AddressablesUtils.LoadAssetAsyncAndReleaseHandle<GameObject>(_BoardPieces[x, y].ToString()));
                     piece = instantiatedPiece.AddComponent<Piece>();
-                    piece.Init(_BoardPieces[x, y], pieceColor, new Vector3(y, .1f, x), x > 2 ? 180 : 0, CheckIfPlayerTurn, GetPieceCurrentPosition, ShowLegalMoves);
+
+                    piece.Init(_BoardPieces[x, y], pieceColor, new Vector3(y, .1f, x), x > 2 ? 180 : 0);
+                    piece.AttachListeners(CheckIfPlayerTurn, GetPieceCurrentPosition, CheckPieceAtGivenPosition, ShowLegalMoves);
+
                     piece.transform.SetParent(pieceColor == EPieceColor.White ? _WhitePiecesContainer.transform : _BlackPiecesContainer.transform);
 
                     _GameBoard[x, y] = new BoardNode(piece, gridNode);
@@ -126,9 +129,10 @@ namespace Chess
                     return new Vector2Int(y, x);
                 }
             }
-
             return new Vector2Int(0, 0);
         }
+
+        public EPieceColor CheckPieceAtGivenPosition(int x, int y) => _GameBoard[y, x].GetPieceColor();
 
         public void ShowLegalMoves(Vector2Int[] legalMoves)
         {

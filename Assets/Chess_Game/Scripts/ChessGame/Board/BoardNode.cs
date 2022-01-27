@@ -26,7 +26,13 @@
             Piece = piece;
         }
 
-        public EPieceColor GetPieceColor() => Piece.GetPieceColor();
+        public EPieceColor GetPieceColor()
+        {
+            if (Piece == null)
+                return EPieceColor.None;
+
+            return Piece.GetPieceColor();
+        }
 
         public bool GetNodeState() => Piece != null;
 
